@@ -1,5 +1,5 @@
-as -o Boot.o AdamAndEve.asm
+as -o Boot.o Boot16.asm
 ld -o Boot.tmp -Ttext 0x7c00 Boot.o
-objcopy -O binary Boot.tmp -j .text AdamAndEve.bin
+objcopy -O binary Boot.tmp -j .text Booster.bin
 rm Boot.o
 rm Boot.tmp
