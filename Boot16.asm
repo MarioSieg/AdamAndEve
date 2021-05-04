@@ -15,7 +15,7 @@
 # Variables     -> ___$MODE_$NAME
 
 .text
-.code16 # we are using 16 bit mode
+.code16 # we are using 16 bit protected mode
 .global _RM_ENTRY_
 
 ################################ ENTRY ################################
@@ -24,12 +24,10 @@
 # We are in 16-bit real mode,
 # 8 and 16 bit registers only, we can use segmentation, no virtual memory, no paging.
 _RM_ENTRY:
-    movw    $___RM_INFO, %si
-    callw   _RM_PRINT_STR
-    movw    $___RM_WELCOME, %si
-    callw   _RM_PRINT_STR
+    MOVW    $___RM_WELCOME, %SI
+    CALLW   _RM_PRINT_STR
     __RM_ENTRY:
-        jmp __RM_ENTRY
+        JMP __RM_ENTRY
 
 ################################ ROUTINES ################################
 
@@ -38,41 +36,40 @@ _RM_ENTRY:
 # This basically means that the system will execute the code from the
 # first insturction again without actually rebooting.
 _RM_REBOOT:
-    ljmpw $0xFFFF, $0x0
+    LJMPW $0xFFFF, $0x0
 
 _RM_ERROR:
-    movw    $___RM_ERROR, %si
-    callw   _RM_PRINT_STR
+    MOVW    $___RM_ERROR, %SI
+    CALLW   _RM_PRINT_STR
     __RM_ERROR:
-        jmp __RM_ERROR
+        JMP __RM_ERROR
 
 # Prints a single 8-bit ASCII character using BIOS interrupts.
 # The char to print must be in %al
 _RM_PUTCHAR:
-    movb    $0x0E, %ah  # Set to teletype
-    int     $0x10       # Call BIOS interrupt
-    retw
+    MOVB    $0x0E, %AH  # Set to teletype
+    INT     $0x10       # Call BIOS interrupt
+    RETW
 
 # Prints a null terminated string using BIOS interrupts.
 # The address of the null terminated string must be in %si
 _RM_PRINT_STR:
-    movb    $0x0E, %ah              # Set to teletype
-    testw   %si, %si                # Set ZF if %si == 0
-    je      __RM_PRINT_STR_END      # Exit if input was null
+    MOVB    $0x0E, %AH              # Set to teletype
+    TESTW   %SI, %SI                # Set ZF if %si == 0
+    JE      __RM_PRINT_STR_END      # Exit if input was null
 __RM_PRINT_STR_LOOP:
-    movb    (%si), %al              # Load one byte from address of %si into %al
-    int     $0x10                   # Call BIOS interrupt
-    incw    %si                     # Increment pointer, move to next character byte
-    testb   %al, %al                # Check for null terminator, set ZF if %al == 0
-    jne     __RM_PRINT_STR_LOOP     # Jump to end if we reached the end of the string.
+    MOVB    (%SI), %AL              # Load one byte from address of %si into %al
+    INT     $0x10                   # Call BIOS interrupt
+    INCW    %SI                     # Increment pointer, move to next character byte
+    TESTB   %AL, %AL                # Check for null terminator, set ZF if %al == 0
+    JNE     __RM_PRINT_STR_LOOP     # Jump to end if we reached the end of the string.
 __RM_PRINT_STR_END:  
-    retw
+    RETW
 
 ################################ DATA ################################
 
-___RM_INFO:         .asciz "AdamAndEve tiny x86 legacy bootloader (C) Mario Sieg \"pinsrq\" <mt3000@gmx.de>\r\n"
-___RM_WELCOME:      .asciz "Booted into 16-bit real mode!\r\n"
-___RM_ERROR:        .asciz "Unknown real mode boot loader error!\r\n"
+___RM_WELCOME:      .asciz "\rBooted into 16-bit real mode!\n"
+___RM_ERROR:        .asciz "\rUnknown real mode boot loader error!\n"
 
 .fill 510-(.-_RM_ENTRY), 1, 0   # Fill the rest of the bytes with zeroes
 .word 0xAA55                    # The 2 magic bytes 0x55AA but because x86 is little endian, we need to swap them.
