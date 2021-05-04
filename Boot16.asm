@@ -24,6 +24,31 @@
 # We are in 16-bit real mode,
 # 8 and 16 bit registers only, we can use segmentation, no virtual memory, no paging.
 _RM_ENTRY:
+    JMP _RM_MAIN
+
+    .space 3 - (.-_RM_ENTRY)
+    # Configuration for a 2.88MB floppy using FAT 12
+    OEMname:               .ascii      "BOOSTER "
+    ___BytesPerSector:     .word       512
+    ___SectPerCluster:     .byte       1
+    ___ReservedSectors:    .word       1
+    ___NumFAT:             .byte       2
+    ___NumRootDirEntries:  .word       240
+    ___NumSectors:         .word       5760
+    ___MediaType:          .byte       0xf0
+    ___NumFATsectors:      .word       9
+    ___SectorsPerTrack:    .word       36
+    ___NumHeads:           .word       2
+    ___NumHiddenSectors:   .long       0
+    ___NumSectorsHuge:     .long       0
+    ___DriveNum:           .byte       0
+    ___Reserved:           .byte       0x00
+    ___Signature:          .byte       0x29
+    ___VolumeID:           .long       0x54428E71
+    ___VolumeLabel:        .ascii      "NO NAME    "
+    ___FileSysType:        .ascii      "FAT12   "
+
+_RM_MAIN:
     MOVW    $___RM_WELCOME, %SI
     CALLW   _RM_PRINT_STR
     __RM_ENTRY:
