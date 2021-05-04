@@ -93,7 +93,7 @@ __RM_PRINT_STR_END:
 
 ################################ DATA ################################
 
-___RM_WELCOME:      .asciz "\rBooted into 16-bit real mode!\n"
+___RM_WELCOME:      .asciz "\rParadox OS (C) Copyright Mario Sieg \"pinsrq\" <mt3000@gmx.de>\n\rBooted into 16-bit real mode!\n"
 ___RM_ERROR:        .asciz "\rUnknown real mode boot loader error!\n"
 
 .fill 510-(.-_RM_ENTRY), 1, 0   # Fill the rest of the bytes with zeroes
