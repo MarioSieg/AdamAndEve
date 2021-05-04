@@ -35,7 +35,7 @@ _RM_ENTRY:
     ___NumFAT:             .byte       2
     ___NumRootDirEntries:  .word       240
     ___NumSectors:         .word       5760
-    ___MediaType:          .byte       0xf0
+    ___MediaType:          .byte       0xF0
     ___NumFATsectors:      .word       9
     ___SectorsPerTrack:    .word       36
     ___NumHeads:           .word       2
